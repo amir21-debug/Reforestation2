@@ -316,7 +316,8 @@ end
     treeStateSquare13=0
     treeStateSquare14=0
     treeStateSquare15=0
-    
+    wateringMinigameXVAL= {}
+    bottomXVal=0;
 
   fullgrowncedar = love.graphics.newImage("images/Cedar Tree.png")
     fullgrownacacia = love.graphics.newImage("images/Acacia Tree.png")
@@ -650,8 +651,6 @@ function updateBurningTrees(dt)
     end
 end
 
-
-
 function updateBurningTrees(dt)
     for i, tree in ipairs(burningTrees) do
         if tree.active then
@@ -783,20 +782,20 @@ function love.draw()
     if gamestate == 0 then
         -- Main menu state
         love.graphics.draw(background, 0, 0, 0, 2.2, 2.2)
-        love.graphics.draw(banner1, 330, 250, 0, 3, 3)
-        love.graphics.draw(banner1, 330, 325, 0, 3, 3)
-        love.graphics.draw(banner1, 330, 400, 0, 3, 3)
-        love.graphics.draw(banner1, 330, 475, 0, 3, 3)
+        love.graphics.draw(banner1, 310, 250, 0, 3, 3)
+        love.graphics.draw(banner1, 310, 325, 0, 3, 3)
+        love.graphics.draw(banner1, 310, 400, 0, 3, 3)
+        love.graphics.draw(banner1, 310, 475, 0, 3, 3)
         love.graphics.setColor(1, 1, 1)
         love.graphics.setFont(font1)
-        love.graphics.print("FOREST", 340, 100)
-        love.graphics.print("BUILDER", 330, 160)
+        love.graphics.print("FOREST", 308, 100)
+        love.graphics.print("BUILDER", 299, 160)
         love.graphics.setColor(0, 0, 0)
         love.graphics.setFont(font2)
-        love.graphics.print("START", 380, 264)
-        love.graphics.print("STAGE 2", 376, 338)
-        love.graphics.print("STAGE 3", 376, 414)
-        love.graphics.print("SETTINGS", 374, 488)
+        love.graphics.print("START", 370, 264)
+        love.graphics.print("STAGE 2", 356, 338)
+        love.graphics.print("STAGE 3", 356, 414)
+        love.graphics.print("SETTINGS", 354, 488)
         love.graphics.setColor(1, 1, 1)
 
     elseif gamestate == 2 then -- Settings screen
@@ -986,8 +985,8 @@ function love.draw()
             love.graphics.rectangle("fill", 200, 250, 400, 150)
             love.graphics.setColor(1,1,1)
             love.graphics.setFont(font4)
-            love.graphics.print("Trees",340,280)
-            love.graphics.print("Watered!",303,320)
+            love.graphics.print("Trees",349,280)
+            love.graphics.print("Watered!",323,320)
             love.graphics.setFont(font3)
             love.graphics.print("press space to continue",326,360)
         end
@@ -1120,6 +1119,9 @@ function love.draw()
     -- Draw seed selection UI
     seedSelectionP2.draw()
     
+              
+
+
     -- Only draw dialog if closeDialogue is false
     if closeDialogue == false then
         dialogManager:draw()
@@ -1148,7 +1150,11 @@ function love.draw()
 
       
     elseif gamestate == 11 then
+
         if P2resetflag3==0 then
+            for i=1,15 do 
+                wateringMinigameXVAL[i]=math.random(65,710)
+             end
             renderObjectives=true
             totalWateredTrees=0
             overWatered=0
@@ -1203,6 +1209,7 @@ function love.draw()
            --if player is on a tree, and a miss penalty isnt active, start the game event. 
            if treeLocation(0) and missPenalty==false and stopBar==false and closeDialogue==true then
               stopBar=false
+              bottomXVal=wateringMinigameXVAL[totalWateredTrees+1]
               drawWateringMinigameP2()
           end
   
@@ -1235,7 +1242,7 @@ function love.draw()
               love.graphics.setColor(1,1,1)
               love.graphics.setFont(font4)
               love.graphics.print("Wildlife",340,280)
-              love.graphics.print("Returned!",303,320)
+              love.graphics.print("Returned!",323,320)
               love.graphics.setFont(font3)
               love.graphics.print("press space to continue",326,360)
          end
@@ -1270,7 +1277,7 @@ elseif gamestate == 12 then
         local treeY = math.floor(tree.position.y / tileheight)
         
         if spritePlayer.tile_x == treeX and spritePlayer.tile_y == treeY then
-            drawWateringMinigameP2() -- Shows moving bar
+            drawWateringMinigame() -- Shows moving bar
           end
     end
 
@@ -1376,7 +1383,7 @@ elseif gamestate == 13 then
         local treeY = math.floor(tree.position.y / tileheight)
         
         if spritePlayer.tile_x == treeX and spritePlayer.tile_y == treeY and tree.active then
-            drawWateringMinigameP2() -- Reuse the watering minigame UI for extinguishing
+            drawWateringMinigame() -- Reuse the watering minigame UI for extinguishing
             nearBurningTree = true
             break
         end
@@ -1962,7 +1969,7 @@ function love.keypressed(key)
         })
     end
     elseif key == "space" and gamestate == 11 then
-        if withinGreen() and onRedXP2() == true and missPenalty == false then
+        if withinGreenP2() and onRedXP2() == true and missPenalty == false then
             stopBar = true
             treeLocation(1)
             totalWateredTrees = totalWateredTrees + 1
@@ -1978,6 +1985,7 @@ function love.keypressed(key)
         elseif overWatered == 3 then
             -- Reset 
             overWatered=0
+            barSpeedModifier=0
             totalWateredTrees=0
             treeStateSquare1=0
             treeStateSquare2=0
@@ -2172,6 +2180,15 @@ end
 end
 end
 
+function withinGreenP2()
+    
+    --if the bar is withing the green zone on the watering mini game return true
+    if movingBarX>=bottomXVal and movingBarX<bottomXVal+50 then
+        return true
+    else
+        return false
+    end
+ end
   
 function updateFireExtinguishing(dt)
     for i, tree in ipairs(burningTrees) do
@@ -2255,7 +2272,7 @@ function drawWateringMinigameP2()
         love.graphics.rectangle("fill", 40, 500, 720, 75)
         --zone
         love.graphics.setColor(0,.9,.4)
-        love.graphics.rectangle("fill", 710 ,500, 50, 75)
+        love.graphics.rectangle("fill", bottomXVal ,500, 50, 75)
         --bar 
         love.graphics.setColor(0,0,0)
         love.graphics.rectangle("fill", movingBarX, 500, 10, 75)
