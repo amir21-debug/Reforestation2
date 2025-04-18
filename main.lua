@@ -2,6 +2,7 @@
 local seedSelection = require("code.seedSelection")
 local seedSelectionP2 = require("code.seedSelectionP2")
 local seedPlantingP2 = require("code.seedPlantingP2")
+local settings = require("code.settings")
 
 
 
@@ -131,6 +132,7 @@ animalSpawnInterval14 = 1  -- seconds between animal appearances
     love.graphics.setDefaultFilter('nearest', 'nearest', 1)
   banner1 = love.graphics.newImage("images/banner1.png")
     background = love.graphics.newImage("images/MenuBackground.png")
+     background2 = love.graphics.newImage("images/skyBackground.png")
     forest1 = love.graphics.newImage("images/Forest.png")
     forest2 = love.graphics.newImage("images/Forest2.png")
     forest3 = love.graphics.newImage("images/barrenland1.png")
@@ -316,8 +318,7 @@ end
     treeStateSquare13=0
     treeStateSquare14=0
     treeStateSquare15=0
-    wateringMinigameXVAL= {}
-    bottomXVal=0;
+    
 
   fullgrowncedar = love.graphics.newImage("images/Cedar Tree.png")
     fullgrownacacia = love.graphics.newImage("images/Acacia Tree.png")
@@ -651,6 +652,8 @@ function updateBurningTrees(dt)
     end
 end
 
+
+
 function updateBurningTrees(dt)
     for i, tree in ipairs(burningTrees) do
         if tree.active then
@@ -782,20 +785,20 @@ function love.draw()
     if gamestate == 0 then
         -- Main menu state
         love.graphics.draw(background, 0, 0, 0, 2.2, 2.2)
-        love.graphics.draw(banner1, 310, 250, 0, 3, 3)
-        love.graphics.draw(banner1, 310, 325, 0, 3, 3)
-        love.graphics.draw(banner1, 310, 400, 0, 3, 3)
-        love.graphics.draw(banner1, 310, 475, 0, 3, 3)
+        love.graphics.draw(banner1, 330, 250, 0, 3, 3)
+        love.graphics.draw(banner1, 330, 325, 0, 3, 3)
+        love.graphics.draw(banner1, 330, 400, 0, 3, 3)
+        love.graphics.draw(banner1, 330, 475, 0, 3, 3)
         love.graphics.setColor(1, 1, 1)
         love.graphics.setFont(font1)
-        love.graphics.print("FOREST", 308, 100)
-        love.graphics.print("BUILDER", 299, 160)
+        love.graphics.print("FOREST", 340, 100)
+        love.graphics.print("BUILDER", 330, 160)
         love.graphics.setColor(0, 0, 0)
         love.graphics.setFont(font2)
-        love.graphics.print("START", 370, 264)
-        love.graphics.print("STAGE 2", 356, 338)
-        love.graphics.print("STAGE 3", 356, 414)
-        love.graphics.print("SETTINGS", 354, 488)
+        love.graphics.print("START", 380, 264)
+        love.graphics.print("STAGE 2", 376, 338)
+        love.graphics.print("STAGE 3", 376, 414)
+        love.graphics.print("SETTINGS", 374, 488)
         love.graphics.setColor(1, 1, 1)
 
     elseif gamestate == 2 then -- Settings screen
@@ -985,8 +988,8 @@ function love.draw()
             love.graphics.rectangle("fill", 200, 250, 400, 150)
             love.graphics.setColor(1,1,1)
             love.graphics.setFont(font4)
-            love.graphics.print("Trees",349,280)
-            love.graphics.print("Watered!",323,320)
+            love.graphics.print("Trees",340,280)
+            love.graphics.print("Watered!",303,320)
             love.graphics.setFont(font3)
             love.graphics.print("press space to continue",326,360)
         end
@@ -1016,6 +1019,19 @@ function love.draw()
             love.graphics.setFont(font3)
             love.graphics.print("press space to continue",326,360)
         end
+    elseif gamestate == 6.5 then
+        -- Intermediate menu screen between stage 6 and 7
+        love.graphics.draw(background, 0, 0, 0, 2.2, 2.2)
+        love.graphics.draw(banner1, 340, 300, 0, 3, 3)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.setFont(font2)
+        love.graphics.print("Welcome To", 400, 150)
+        love.graphics.print("Level 2!", 400, 200)
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.setFont(font2)
+        love.graphics.print("START", 394, 310)
+        love.graphics.setColor(1, 1, 1)
+
     elseif gamestate == 7 then
         
     --variable resets - i only need to do this once so use flag
@@ -1056,7 +1072,13 @@ function love.draw()
         love.graphics.setFont(font3)
         love.graphics.print("press space to continue",326,360)
         closeDialogue=false
+        stopMenuRender1 = true
+            stopMenuRender2 = true
+            -- Add this line to pop the current dialog and show the next one
+            dialogManager:pop()
+            gamestate = 8
      end
+     
 
     elseif gamestate == 8 then
      
@@ -1089,6 +1111,7 @@ function love.draw()
             if popOnce==0 then
                 popOnce=popOnce+1
                 dialogManager:pop()
+                dialogManager:pop()
             end
            if closeDialogue==false and totalDugHoles<15 then
                dialogManager:draw()
@@ -1119,9 +1142,6 @@ function love.draw()
     -- Draw seed selection UI
     seedSelectionP2.draw()
     
-              
-
-
     -- Only draw dialog if closeDialogue is false
     if closeDialogue == false then
         dialogManager:draw()
@@ -1150,11 +1170,7 @@ function love.draw()
 
       
     elseif gamestate == 11 then
-
         if P2resetflag3==0 then
-            for i=1,15 do 
-                wateringMinigameXVAL[i]=math.random(65,710)
-             end
             renderObjectives=true
             totalWateredTrees=0
             overWatered=0
@@ -1166,9 +1182,9 @@ function love.draw()
         spritePlayer.AVATAR = love.graphics.newImage("images/boy3.png")
         love.graphics.setFont(font2)
   
-      --  drawXsP2() -- ⬅️ draw holes (red X or dirt)
+    
   
-        seedPlantingP2.draw() -- ⬅️ draw planted seeds and saplings
+        seedPlantingP2.draw() 
   
         --temp line
         
@@ -1209,7 +1225,6 @@ function love.draw()
            --if player is on a tree, and a miss penalty isnt active, start the game event. 
            if treeLocation(0) and missPenalty==false and stopBar==false and closeDialogue==true then
               stopBar=false
-              bottomXVal=wateringMinigameXVAL[totalWateredTrees+1]
               drawWateringMinigameP2()
           end
   
@@ -1242,7 +1257,7 @@ function love.draw()
               love.graphics.setColor(1,1,1)
               love.graphics.setFont(font4)
               love.graphics.print("Wildlife",340,280)
-              love.graphics.print("Returned!",323,320)
+              love.graphics.print("Returned!",303,320)
               love.graphics.setFont(font3)
               love.graphics.print("press space to continue",326,360)
          end
@@ -1277,7 +1292,7 @@ elseif gamestate == 12 then
         local treeY = math.floor(tree.position.y / tileheight)
         
         if spritePlayer.tile_x == treeX and spritePlayer.tile_y == treeY then
-            drawWateringMinigame() -- Shows moving bar
+            drawWateringMinigameP2() -- Shows moving bar
           end
     end
 
@@ -1383,7 +1398,7 @@ elseif gamestate == 13 then
         local treeY = math.floor(tree.position.y / tileheight)
         
         if spritePlayer.tile_x == treeX and spritePlayer.tile_y == treeY and tree.active then
-            drawWateringMinigame() -- Reuse the watering minigame UI for extinguishing
+            drawWateringMinigameP2() -- Reuse the watering minigame UI for extinguishing
             nearBurningTree = true
             break
         end
@@ -1492,6 +1507,18 @@ elseif gamestate == 13 then
             -- Reset color
             love.graphics.setColor(1, 1, 1)
         end
+    elseif gamestate == 14.5 then
+        -- Intermediate menu screen between stage 6 and 7
+        love.graphics.draw(background, 0, 0, 0, 2.2, 2.2)
+        love.graphics.draw(banner1, 340, 300, 0, 3, 3)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.setFont(font2)
+        love.graphics.print("Welcome To", 400, 150)
+        love.graphics.print("Level 3!", 400, 200)
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.setFont(font2)
+        love.graphics.print("START", 394, 310)
+        love.graphics.setColor(1, 1, 1)
 end
 end
 
@@ -1503,59 +1530,59 @@ function love.mousepressed(x, y, button, istouch)
         seedSelection.mousepressed(x, y, button, istouch)
     end
     if gamestate == 5 then
-      seedPlanting.mousepressed(x, y, button)
+        seedPlanting.mousepressed(x, y, button)
     end
     
-if gamestate == 9 then
-    seedSelectionP2.mousepressed(x, y, button, istouch)
-end
-if gamestate == 10 then
-    if button == 1 and closeDialogue == true then  -- prevent planting while dialogue is showing
-        for i, hole in ipairs(seedPlantingP2.holePositions) do
-            if not seedPlantingP2.plantedHoles[i] then
-                if x >= hole.x - 20 and x <= hole.x + 60 and 
-                   y >= hole.y - 20 and y <= hole.y + 60 then
+    if gamestate == 9 then
+        seedSelectionP2.mousepressed(x, y, button, istouch)
+    end
+    if gamestate == 10 then
+        if button == 1 and closeDialogue == true then  -- prevent planting while dialogue is showing
+            for i, hole in ipairs(seedPlantingP2.holePositions) do
+                if not seedPlantingP2.plantedHoles[i] then
+                    if x >= hole.x - 20 and x <= hole.x + 60 and 
+                       y >= hole.y - 20 and y <= hole.y + 60 then
 
-                    -- Randomly pick a seed type from selected
-                    local selectedSeeds = seedSelectionP2.selectedSeeds
-                    if #selectedSeeds > 0 then
-                        local chosenSeed = selectedSeeds[math.random(#selectedSeeds)]
+                        -- Randomly pick a seed type from selected
+                        local selectedSeeds = seedSelectionP2.selectedSeeds
+                        if #selectedSeeds > 0 then
+                            local chosenSeed = selectedSeeds[math.random(#selectedSeeds)]
 
-                        local seedImg = love.graphics.newImage(chosenSeed .. "images/Seed.png")
+                            local seedImg = love.graphics.newImage(chosenSeed .. "images/Seed.png")
 
-                        table.insert(seedPlantingP2.plantedSeeds, {
-                            x = hole.x,
-                            y = hole.y,
-                            state = "seed",
-                            timer = 0,
-                            counted = false,
-                            image = seedImg,
-                            type = chosenSeed
-                        })
+                            table.insert(seedPlantingP2.plantedSeeds, {
+                                x = hole.x,
+                                y = hole.y,
+                                state = "seed",
+                                timer = 0,
+                                counted = false,
+                                image = seedImg,
+                                type = chosenSeed
+                            })
 
-                        seedPlantingP2.plantedHoles[i] = true
+                            seedPlantingP2.plantedHoles[i] = true
+                        end
+
+                        break
                     end
-
+                end
+            end
+        end
+    end
+    
+    if button == 1 and gamestate == 12 and savingAnimalsStarted then
+        for _, animal in ipairs(animalsStage3) do
+            if animal.visible and not animal.saved then
+                -- check if clicked inside animal bounds
+                if x >= animal.x and x <= animal.x + animal.sprite:getWidth() * 0.7 and
+                   y >= animal.y and y <= animal.y + animal.sprite:getHeight() * 0.7 then
+                    animal.saved = true
+                    animalsSaved = animalsSaved + 1
                     break
                 end
             end
         end
     end
-
-end
-  if button == 1 and gamestate == 12 and savingAnimalsStarted then
-      for _, animal in ipairs(animalsStage3) do
-          if animal.visible and not animal.saved then
-              -- check if clicked inside animal bounds
-              if x >= animal.x and x <= animal.x + animal.sprite:getWidth() * 0.7 and
-                 y >= animal.y and y <= animal.y + animal.sprite:getHeight() * 0.7 then
-                  animal.saved = true
-                  animalsSaved = animalsSaved + 1
-                  break
-              end
-          end
-      end
-  end
 
     if button == 1 then
         xclick = x
@@ -1571,16 +1598,24 @@ end
             if xclick > 300 and yclick > 400 and xclick < 300 + width * 3 and yclick < 375 + height * 3 then
                 gamestate = 12
             end
-            if xclick > 300 and yclick > 475 and xclick < 300 + width * 3 and yclick < 375 + height * 3 then
-                gamestate = 2
+            -- Fixed settings button check - this is likely your problem area
+            if xclick > 300 and yclick > 475 and xclick < 300 + width * 3 and yclick < 525 + height * 3 then
+                gamestate = 2  -- Set gamestate to settings (2)
             end
         elseif gamestate == 6.5 then
-            -- Handle click on "START LEVEL 2" button
-            if xclick > 300 and yclick > 325 and xclick < 300 + width * 3 and yclick < 375 + height * 3 then
+            if xclick > 340 and yclick > 300 and xclick < 340 + width * 3 and yclick < 300 + height * 3 then
                 gamestate = 7  -- Start Level 2
             end
+        elseif gamestate == 14.5 then
+            if xclick > 300 and yclick > 300 and xclick < 300 + width * 3 and yclick < 300 + height * 3 then
+                gamestate = 0  -- Return to main menu
+            end
         elseif gamestate == 2 then
-            gamestate = settings.mousepressed(x, y, button)
+            -- Use the return value from settings.mousepressed to change gamestate if needed
+            local newGamestate = settings.mousepressed(x, y, button)
+            if newGamestate ~= nil then
+                gamestate = newGamestate
+            end
         elseif gamestate == 1 then
             local buttonScale = 0.5
             local buttonWidth = PreviousButton:getWidth() * buttonScale
@@ -1608,15 +1643,14 @@ end
             end
         end
     end
-    
-
-
 end
+
 function love.mousereleased(x, y, button)
     if gamestate == 2 then
         settings.mousereleased(x, y, button)
     end
 end
+
 function love.mousemoved(x, y)
     if gamestate == 2 then
         settings.mousemoved(x, y)
@@ -1868,6 +1902,30 @@ function love.keypressed(key)
         else
             print("Player is NOT on Red X")
         end
+    elseif gamestate == 6 and overWatered == 3 and key == "space" then
+        -- Reset the overwatered counter and other necessary variables
+        overWatered = 0
+        movingBarX = 40
+        barDirection = 300  -- Make the bar faster after 3 misses
+        stopBar = false
+        missPenalty = false
+        flag2 = true
+      
+        totalWateredTrees = 0
+
+        redX1 = true
+        redX2 = true
+        redX3 = true
+        redX4 = true
+        redX5 = true
+        redX6 = true
+        redX7 = true
+        redX8 = true
+        redX9 = true
+        redX10 = true
+        
+        barSpeedModifier = 300  
+        
     elseif key== "space" and gamestate==6 then
         if withinGreen() and onRedX2(0) then
             treeLocation(spritePlayer.tile_x,spritePlayer.tile_y, 1)
@@ -1881,18 +1939,20 @@ function love.keypressed(key)
             --activate misspenalty variable, play error noise, add to error count and hide the bar minigame until the player steps off and steps back on the tile
             if overWatered==3 then
                 gamestate6reset()
-                barSpeedModifier=0
+                barSpeedModifier=250
             else
                 errornoise:play()
                 overWatered=overWatered+1
                 missPenalty=true
             end
         elseif overWatered>=3 then
-            --reset overwatered counter and the level
+           
             gamestate6reset()
+            barSpeedModifier=300  -- Set to faster speed after reset
+       
         elseif totalWateredTrees==10 and overWatered~=3 then
             --go back to start menu??
-            gamestate=7
+            gamestate=6.5
             guideMonkeyVisible=false
 
         end
@@ -1969,7 +2029,7 @@ function love.keypressed(key)
         })
     end
     elseif key == "space" and gamestate == 11 then
-        if withinGreenP2() and onRedXP2() == true and missPenalty == false then
+        if withinGreen() and onRedXP2() == true and missPenalty == false then
             stopBar = true
             treeLocation(1)
             totalWateredTrees = totalWateredTrees + 1
@@ -1985,7 +2045,6 @@ function love.keypressed(key)
         elseif overWatered == 3 then
             -- Reset 
             overWatered=0
-            barSpeedModifier=0
             totalWateredTrees=0
             treeStateSquare1=0
             treeStateSquare2=0
@@ -2140,7 +2199,7 @@ elseif gamestate == 13 then
             dialogManager.dialogueQueue = {}
             dialogManager.activeDialogue = nil
 
-                gamestate = 0
+                gamestate = 14.5
                 -- Reset state variables
             popOnce = 0
             closeDialogue = false
@@ -2156,6 +2215,9 @@ elseif gamestate == 13 then
                 dialogManager.activeDialogue = nil
             end
     end
+elseif key == "space" and gamestate == 14.5 then
+    
+    gamestate = 0
 end
 
     
@@ -2180,15 +2242,6 @@ end
 end
 end
 
-function withinGreenP2()
-    
-    --if the bar is withing the green zone on the watering mini game return true
-    if movingBarX>=bottomXVal and movingBarX<bottomXVal+50 then
-        return true
-    else
-        return false
-    end
- end
   
 function updateFireExtinguishing(dt)
     for i, tree in ipairs(burningTrees) do
@@ -2272,7 +2325,7 @@ function drawWateringMinigameP2()
         love.graphics.rectangle("fill", 40, 500, 720, 75)
         --zone
         love.graphics.setColor(0,.9,.4)
-        love.graphics.rectangle("fill", bottomXVal ,500, 50, 75)
+        love.graphics.rectangle("fill", 710 ,500, 50, 75)
         --bar 
         love.graphics.setColor(0,0,0)
         love.graphics.rectangle("fill", movingBarX, 500, 10, 75)
@@ -3147,4 +3200,5 @@ function updateCurrentDialogue(state)
         print("Dialogue updated to seed selection")
     end
 end
+
 
