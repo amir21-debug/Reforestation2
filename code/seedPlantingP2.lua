@@ -39,9 +39,6 @@ function seedPlantingP2.load(selectedSeedTypes)
     seedPlantingP2.gameCompleted = false
 end
 
-function seedPlantingP2.update(dt)
-   --nothing needed here
-end
 
 function seedPlantingP2.draw()
     local tilewidth = 36
