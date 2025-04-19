@@ -403,7 +403,7 @@ function love.update(dt)
 
     end
     if gamestate == 10 then
-        seedPlantingP2.update(dt)
+        --seedPlantingP2.update(dt)
         local allCovered = true
         for _, seed in ipairs(seedPlantingP2.plantedSeeds) do
             if seed.state ~= "covered" then
