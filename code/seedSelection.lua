@@ -35,8 +35,12 @@ function seedSelection.update(dt)
 end
 
 function seedSelection.draw()
-    -- Draw the background
-    love.graphics.draw(seedSelection.background, 0, 0)
+    -- Draw the background scaled to fit the window
+    local bgWidth = seedSelection.background:getWidth()
+    local bgHeight = seedSelection.background:getHeight()
+    local scaleX = love.graphics.getWidth() / bgWidth
+    local scaleY = love.graphics.getHeight() / bgHeight
+    love.graphics.draw(seedSelection.background, 0, 0, 0, scaleX, scaleY)
 
     -- Draw seed packets horizontally
     local seedY = 335  -- Adjusted Y position for all seed packets (moved down)
